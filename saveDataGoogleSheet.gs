@@ -1,56 +1,52 @@
 function doGet(e) {
   dataDrive = e;
-  save_data_to_sheet(dataDrive);
+  read_data(dataDrive);
 }
 
 function doPost(e) {
   dataDrive = JSON.parse(e.postData.contents);
-  save_data_to_sheet(dataDrive);
+  read_data(dataDrive);
 }
 
-function save_data_to_sheet(e){
-  Logger.log("--- doGet ---");
- 
- var tag = "",
-     value = "";
- 
+function read_data(e){
+  Logger.log("");
+  /*
+  for a future version, try to implement something that allows sending the spreadsheet you want to write as a parameter
+  */
   try {
- 
-    // this helps during debuggin
-    if (e == null){e={}; e.parameters = {tag:"test",value:"-1"};}
-    tag = e.parameters.tag;
-    value = e.parameters.value;
-    // save the data to spreadsheet
-    save_data(tag, value);
-    return ContentService.createTextOutput("Wrote:\n  tag: " + tag + "\n  value: " + value);
+    save_data(e);
+    return ContentService.createTextOutput("the data was written in the spreadsheet");
  
   } catch(error) { 
     Logger.log(error);    
-    return ContentService.createTextOutput("oops...." + error.message 
-                                            + "\n" + new Date() 
-                                            + "\ntag: " + tag +
-                                            + "\nvalue: " + value);
+    return ContentService.createTextOutput("oops...." + error.message);
   }  
 }
  
 // Method to save given data to a sheet
-function save_data(tag, value){
+function save_data(e){
   Logger.log("--- save_data ---"); 
   try {
     var dateTime = new Date();
-    // Paste the URL of the Google Sheets starting from https thru /edit
-    // For e.g.: https://docs.google.com/..../edit 
-    var ss = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/14C9TgdYTxNokt1g_KMBBiMaq0gqRmuUFhwTJKjViIBM/edit");
-    var dataLoggerSheet = ss.getSheetByName("PG1");
+    // ss must be the URL of the Google Sheets starting from https thru /edit 
+    var ss = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/"spreadsheet_ID"/edit");
+    var dataLoggerSheet = ss.getSheetByName("PG1"); //spreadsheet page name(it's not the file name)
  
     // Get last edited row from DataLogger sheet
     var row = dataLoggerSheet.getLastRow() + 1;
  
     // Start Populating the data
-    dataLoggerSheet.getRange("A" + row).setValue(row -1); // ID
-    dataLoggerSheet.getRange("B" + row).setValue(dateTime); // dateTime
-    dataLoggerSheet.getRange("C" + row).setValue(tag); // tag
-    dataLoggerSheet.getRange("D" + row).setValue(value); // value
+    dataLoggerSheet.getRange(row, 1).setValue(row -1); // ID in column A
+    dataLoggerSheet.getRange(row, 2).setValue(dateTime); // dateTime in column B
+    
+    //itarate over the object writting it's parameters in the spreadsheet
+    var column = 3;
+    var object = e.parameters;
+    for (var i in object){
+      dataLoggerSheet.getRange(row, column).setValue(object[i]);
+      column ++;
+    }
+      
   }
  
   catch(error) {
@@ -59,6 +55,3 @@ function save_data(tag, value){
  
   Logger.log("--- save_data end---"); 
 }
-
- var ss = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/14C9TgdYTxNokt1g_KMBBiMaq0gqRmuUFhwTJKjViIBM/edit#gid=0");
-
