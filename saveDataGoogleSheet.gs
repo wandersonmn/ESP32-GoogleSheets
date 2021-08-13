@@ -4,15 +4,12 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  dataDrive = e;
+  dataDrive = JSON.parse(e.postData.contents);
   save_data_to_sheet(dataDrive);
 }
 
-
-
 function save_data_to_sheet(e){
   Logger.log("--- doGet ---");
-  Logger.log(e.parameters);
  
  var tag = "",
      value = "";
@@ -24,7 +21,7 @@ function save_data_to_sheet(e){
     tag = e.parameters.tag;
     value = e.parameters.value;
     // save the data to spreadsheet
-    save_data(tag, value,e);
+    save_data(tag, value);
     return ContentService.createTextOutput("Wrote:\n  tag: " + tag + "\n  value: " + value);
  
   } catch(error) { 
@@ -37,7 +34,7 @@ function save_data_to_sheet(e){
 }
  
 // Method to save given data to a sheet
-function save_data(tag, value,e){
+function save_data(tag, value){
   Logger.log("--- save_data ---"); 
   try {
     var dateTime = new Date();
@@ -50,7 +47,6 @@ function save_data(tag, value,e){
     var row = dataLoggerSheet.getLastRow() + 1;
  
     // Start Populating the data
-    dataLoggerSheet.getRange("E" + row).setValue(e);
     dataLoggerSheet.getRange("A" + row).setValue(row -1); // ID
     dataLoggerSheet.getRange("B" + row).setValue(dateTime); // dateTime
     dataLoggerSheet.getRange("C" + row).setValue(tag); // tag
