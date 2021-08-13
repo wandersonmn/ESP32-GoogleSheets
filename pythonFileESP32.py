@@ -10,7 +10,7 @@ request_data = ujson.dumps({
     	}
 })
 
-r = urequests.post("https://script.google.com/macros/s/AKfycbxbSk8pv3S6mXXDFCHvuYAZkRYx9vPiogsnQrdwtFeJNCM2b-r-VGZRny4EQtza3MU_/exec",
+r = urequests.post("https://script.google.com/macros/s/"Deployment_code"/exec",
                   headers = {'content-type': 'application/json'},
                   data = request_data)
 print(r.content)
