@@ -22,3 +22,15 @@ Send data to google spreadsheets using ESP32 with Micropython
 8. Type a description for your deployment, in the option _**Who has access**_ select _**anyone**_ and click on _**Deploy**_
 9. Copy the **deployment id** to somewhere else and keep it, we'll use it later
 # ESP32 Micropython code
+- The urequests library included in firmware version v1.16 does not suport redirects, so we are using an altered version of the library, **prequests.py** that can handle redirects, then you need to include this file in ESP32 file system.
+- Using BIPES allows you quickly connect, program, deploy, test,... ESP32
+- You must connect esp32 to the internet
+1. Open the file pythonFileESP32.py and paste your **deployment id** on **deployment_code**
+> deployment_code = "Paste here your google script deployment code"
+2. Define all data you want to insert in the spreadsheet on dictionary **row_data**
+> row_data = {}<br />
+> row_data["var1"] = "valor 1" <br />
+> row_data["var2"] = 500 <br />
+> row_data["var3"] = "teste deploy" <br />
+> #row_data["varx"] = valuex  (using this you can create more attributes to send)
+3. send files to the ESP32
