@@ -9,7 +9,7 @@ function doPost(e) {
 }
 
 function read_data(e){
-  Logger.log("");
+  Logger.log("--- read_data ---");
   /*
   for a future version, try to implement something that allows sending the spreadsheet you want to write as a parameter
   */
